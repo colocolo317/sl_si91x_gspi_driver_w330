@@ -27,7 +27,7 @@
  ******************************************************************************/
 #define GSPI_BUFFER_SIZE             1024      // Size of buffer
 #define GSPI_INTF_PLL_CLK            180000000 // Intf pll clock frequency
-#define GSPI_INTF_PLL_REF_CLK        40000000  // Intf pll reference clock frequency
+#define GSPI_INTF_PLL_REF_CLK        80000000  // Intf pll reference clock frequency
 #define GSPI_SOC_PLL_CLK             20000000  // Soc pll clock frequency
 #define GSPI_SOC_PLL_REF_CLK         40000000  // Soc pll reference clock frequency
 #define GSPI_INTF_PLL_500_CTRL_VALUE 0xD900    // Intf pll control value
@@ -35,7 +35,7 @@
 #define GSPI_DVISION_FACTOR          0         // Division factor
 #define GSPI_SWAP_READ_DATA          1         // true to enable and false to disable swap read
 #define GSPI_SWAP_WRITE_DATA         0         // true to enable and false to disable swap write
-#define GSPI_BITRATE                 10000000  // Bitrate for setting the clock division factor
+#define GSPI_BITRATE                 40000000  // Bitrate for setting the clock division factor
 #define GSPI_BIT_WIDTH               8         // Default Bit width
 #define GSPI_MAX_BIT_WIDTH           16        // Maximum Bit width
 #define TIMER_FREQUENCY              32000     // Timer frequency for delay
@@ -179,8 +179,10 @@ void gspi_example_init(void)
     if (sl_si91x_gspi_get_frame_length() > GSPI_BIT_WIDTH) {
       gspi_division_factor = sizeof(gspi_data_out[0]);
     }
+#if 0
     // Syncing master and slave
     wait_for_sync(SYNC_TIME);
+#endif
     // As per the macros enabled in the header file, it will configure the current mode.
     if (SL_USE_TRANSFER) {
       current_mode = SL_GSPI_TRANSFER_DATA;
