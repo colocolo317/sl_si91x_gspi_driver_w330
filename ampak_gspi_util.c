@@ -16,12 +16,13 @@
  ******************************************************************************/
 #include "sl_si91x_gspi.h"
 #include "sl_si91x_gspi_common_config.h"
-#include "gspi_example.h"
 #include "rsi_debug.h"
 #include "sl_ulp_timer_instances.h"
 #include "sl_si91x_ulp_timer_common_config.h"
 #include "sl_si91x_clock_manager.h"
 #include "rsi_rom_clks.h"
+
+#include "ampak_gspi_util.h"
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
@@ -70,37 +71,18 @@ static gspi_mode_enum_t current_mode = SL_GSPI_TRANSFER_DATA;
  ******************************************************************************/
 static sl_status_t init_clock_configuration_structure(sl_gspi_clock_config_t *clock_config);
 static void compare_loop_back_data(void);
-static void callback_event(uint32_t event);
+static void gspi_callback_event(uint32_t event);
 static boolean_t transfer_complete  = false;
 static boolean_t begin_transmission = true;
-static void init_timer_for_sync(void);
-static void wait_for_sync(uint16_t time_ms);
-static void default_clock_configuration(void);
 
 /*******************************************************************************
  **************************   GLOBAL FUNCTIONS   *******************************
  ******************************************************************************/
-// Function to configure clock on powerup
-static void default_clock_configuration(void)
-{
-  // Core Clock runs at 180MHz SOC PLL Clock
-  sl_si91x_clock_manager_m4_set_core_clk(M4_SOCPLLCLK, SOC_PLL_CLK);
 
-  // All peripherals' source to be set to Interface PLL Clock
-  // and it runs at 180MHz
-  sl_si91x_clock_manager_set_pll_freq(INFT_PLL, INTF_PLL_CLK, PLL_REF_CLK_VAL_XTAL);
-
-  // Configure QSPI clock as input source
-  ROMAPI_M4SS_CLK_API->clk_qspi_clk_config(M4CLK,
-                                           QSPI_INTFPLLCLK,
-                                           QSPI_SWALLO_ENABLE,
-                                           QSPI_ODD_DIV_ENABLE,
-                                           QSPI_DIVISION_FACTOR);
-}
 /*******************************************************************************
  * GSPI example initialization function
  ******************************************************************************/
-void gspi_example_init(void)
+void gspi_init(void)
 {
   sl_status_t status;
   sl_gspi_clock_config_t clock_config;
@@ -109,21 +91,13 @@ void gspi_example_init(void)
   sl_gspi_control_config_t config;
   config.bit_width         = GSPI_BIT_WIDTH;
   config.bitrate           = GSPI_BITRATE;
-  config.clock_mode        = SL_GSPI_MODE_0;
+  config.clock_mode        = SL_GSPI_MODE_3;
   config.slave_select_mode = SL_GSPI_MASTER_HW_OUTPUT;
   config.swap_read         = GSPI_SWAP_READ_DATA;
   config.swap_write        = GSPI_SWAP_WRITE_DATA;
 
-  // default clock configuration by application common for whole system
-  default_clock_configuration();
-
-  // Filling the data out array with integer values
-  for (uint16_t i = 0; i < GSPI_BUFFER_SIZE; i++) {
-    gspi_data_out[i] = (uint8_t)(i + 1);
-  }
-  do {
-    // Initialzing the timer
-    init_timer_for_sync();
+  do
+  {
     // Version information of GSPI driver
     version = sl_si91x_gspi_get_version();
     DEBUGOUT("GSPI version is fetched successfully \n");
@@ -166,7 +140,7 @@ void gspi_example_init(void)
     }
     DEBUGOUT("GSPI configuration is successful \n");
     // Register user callback function
-    status = sl_si91x_gspi_register_event_callback(gspi_driver_handle, callback_event);
+    status = sl_si91x_gspi_register_event_callback(gspi_driver_handle, gspi_callback_event);
     if (status != SL_STATUS_OK) {
       DEBUGOUT("sl_si91x_gspi_register_event_callback: Error Code : %lu \n", status);
       break;
@@ -179,27 +153,43 @@ void gspi_example_init(void)
     if (sl_si91x_gspi_get_frame_length() > GSPI_BIT_WIDTH) {
       gspi_division_factor = sizeof(gspi_data_out[0]);
     }
-#if 0
-    // Syncing master and slave
-    wait_for_sync(SYNC_TIME);
-#endif
-    // As per the macros enabled in the header file, it will configure the current mode.
-    if (SL_USE_TRANSFER) {
-      current_mode = SL_GSPI_TRANSFER_DATA;
-      break;
-    }
-    if (SL_USE_SEND) {
-      current_mode = SL_GSPI_SEND_DATA;
-      break;
-    }
-    current_mode = SL_GSPI_RECEIVE_DATA;
   } while (false);
 }
 /*******************************************************************************
  * Function will run continuously in while loop
  ******************************************************************************/
-void gspi_example_process_action(void)
+sl_status_t ampak_gspi_transfer(uint8_t* data_out, uint8_t* data_in, size_t len)
 {
+  sl_si91x_gspi_set_slave_number(GSPI_SLAVE_0);
+  return sl_si91x_gspi_transfer_data(gspi_driver_handle,
+                                     data_out,
+                                     data_in,
+                                     len / gspi_division_factor);
+}
+
+sl_status_t ampak_gspi_send(uint8_t* data_out, size_t len)
+{
+  sl_si91x_gspi_set_slave_number(GSPI_SLAVE_0);
+  return sl_si91x_gspi_send_data(gspi_driver_handle,
+                                     data_out,
+                                     len / gspi_division_factor);
+}
+
+sl_status_t ampak_gspi_receive(uint8_t* data_in, size_t len)
+{
+  sl_si91x_gspi_set_slave_number(GSPI_SLAVE_0);
+  return sl_si91x_gspi_receive_data(gspi_driver_handle,
+                                     data_in,
+                                     len / gspi_division_factor);
+}
+
+
+void gspi_test_run(void)
+{
+  // Filling the data out array with integer values
+  for (uint16_t i = 0; i < GSPI_BUFFER_SIZE; i++) {
+    gspi_data_out[i] = (uint8_t)(i + 1);
+  }
   sl_status_t status;
   // In this switch case, according to the macros enabled in header file, it starts to execute the APIs
   // Assuming all the macros are enabled, after transfer, receive will be executed and after receive
@@ -208,11 +198,7 @@ void gspi_example_process_action(void)
     case SL_GSPI_TRANSFER_DATA:
       if (begin_transmission == true) {
         // Validation for executing the API only once
-        sl_si91x_gspi_set_slave_number(GSPI_SLAVE_0);
-        status = sl_si91x_gspi_transfer_data(gspi_driver_handle,
-                                             gspi_data_out,
-                                             gspi_data_in,
-                                             sizeof(gspi_data_out) / gspi_division_factor);
+        status = ampak_gspi_transfer(gspi_data_out, gspi_data_in, sizeof(gspi_data_out));
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
           DEBUGOUT("sl_si91x_gspi_transfer_data: Error Code : %lu \n", status);
@@ -248,9 +234,7 @@ void gspi_example_process_action(void)
     case SL_GSPI_SEND_DATA:
       if (begin_transmission) {
         // Validation for executing the API only once
-        sl_si91x_gspi_set_slave_number(GSPI_SLAVE_0);
-        status =
-          sl_si91x_gspi_send_data(gspi_driver_handle, gspi_data_out, sizeof(gspi_data_out) / gspi_division_factor);
+        status = ampak_gspi_send(gspi_data_out, sizeof(gspi_data_out));
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
           DEBUGOUT("sl_si91x_gspi_send_data: Error Code : %lu \n", status);
@@ -278,11 +262,8 @@ void gspi_example_process_action(void)
 
     case SL_GSPI_RECEIVE_DATA:
       if (begin_transmission == true) {
-        wait_for_sync(RECEIVE_SYNC_TIME);
         // Validation for executing the API only once
-        sl_si91x_gspi_set_slave_number(GSPI_SLAVE_0);
-        status =
-          sl_si91x_gspi_receive_data(gspi_driver_handle, gspi_data_in, sizeof(gspi_data_in) / gspi_division_factor);
+        status = ampak_gspi_receive(gspi_data_in, sizeof(gspi_data_in));
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
           DEBUGOUT("sl_si91x_gspi_receive_data: Error Code : %lu \n", status);
@@ -374,7 +355,7 @@ static void compare_loop_back_data(void)
  * It is responsible for the event which are triggered by GSPI interface
  * It updates the respective member of the structure as the event is triggered.
  ******************************************************************************/
-static void callback_event(uint32_t event)
+static void gspi_callback_event(uint32_t event)
 {
   switch (event) {
     case SL_GSPI_TRANSFER_COMPLETE:
@@ -385,54 +366,4 @@ static void callback_event(uint32_t event)
     case SL_GSPI_MODE_FAULT:
       break;
   }
-}
-
-/*******************************************************************************
- * @brief  Initialization of timer for sync
- * @param[in] None
- * @return   None
-*******************************************************************************/
-static void init_timer_for_sync(void)
-{
-  sl_status_t status;
-  status = sl_si91x_ulp_timer_configure_clock(&sl_timer_clk_handle);
-  if (status != SL_STATUS_OK) {
-    DEBUGOUT("sl_si91x_ulp_timer_configure_clock failed, error code: %ld", status);
-  }
-  status = sl_si91x_ulp_timer_set_configuration(&sl_timer_handle_timer0);
-  if (status != SL_STATUS_OK) {
-    DEBUGOUT("sl_si91x_ulp_timer_set_configuration failed, error code: %ld", status);
-  }
-  status = sl_si91x_ulp_timer_set_count(TIMER_0, TIMER_FREQUENCY * INITIAL_COUNT);
-  if (status != SL_STATUS_OK) {
-    DEBUGOUT("sl_si91x_ulp_timer_set_count failed, error code: %ld", status);
-  }
-}
-
-/*******************************************************************************
- * @brief  Waits till the master and slave application is synced by creating delay
- * @param[in] time_ms Sync time in milliseconds
- * @return   None
-*******************************************************************************/
-static void wait_for_sync(uint16_t time_ms)
-{
-  sl_status_t status;
-  uint32_t start_time, current_time;
-  uint32_t end_time = time_ms * TIMER_FREQUENCY;
-
-  status = sl_si91x_ulp_timer_start(TIMER_0);
-  if (status != SL_STATUS_OK) {
-    DEBUGOUT("sl_si91x_ulp_timer_start failed, error code: %ld", status);
-  }
-  status = sl_si91x_ulp_timer_get_count(TIMER_0, &start_time);
-  if (status != SL_STATUS_OK) {
-    DEBUGOUT("sl_si91x_ulp_timer_get_count failed, error code: %ld", status);
-  }
-  do {
-    status = sl_si91x_ulp_timer_get_count(TIMER_0, &current_time);
-    if (status != SL_STATUS_OK) {
-      DEBUGOUT("sl_si91x_ulp_timer_get_count failed, error code: %ld", status);
-    }
-  } while (!((current_time - start_time) > end_time));
-  sl_si91x_ulp_timer_stop(TIMER_0);
 }

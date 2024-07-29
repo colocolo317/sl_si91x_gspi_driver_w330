@@ -15,12 +15,14 @@
  *
  ******************************************************************************/
 
-#ifndef GSPI_EXAMPLE_H_
-#define GSPI_EXAMPLE_H_
+#ifndef AMPAK_GSPI_UTIL_H_
+#define AMPAK_GSPI_UTIL_H_
+#include "stddef.h"
+#include "stdint.h"
 
 #define SL_USE_TRANSFER ENABLE
-#define SL_USE_SEND     DISABLE
-#define SL_USE_RECEIVE  DISABLE
+#define SL_USE_SEND     ENABLE
+#define SL_USE_RECEIVE  ENABLE
 
 // -----------------------------------------------------------------------------
 // Prototypes
@@ -31,7 +33,11 @@
  * @param none
  * @return none
  ******************************************************************************/
-void gspi_example_init(void);
+void gspi_init(void);
+
+uint32_t ampak_gspi_transfer(uint8_t* data_out, uint8_t* data_in, size_t len);
+uint32_t ampak_gspi_send(uint8_t* data_out, size_t len);
+uint32_t ampak_gspi_receive(uint8_t* data_in, size_t len);
 
 /***************************************************************************/ /**
  * Function will run continuously 
@@ -46,6 +52,6 @@ void gspi_example_init(void);
  * @param none
  * @return none
  ******************************************************************************/
-void gspi_example_process_action(void);
+void gspi_test_run(void);
 
 #endif /* CALENDAR_EXAMPLE_H_ */

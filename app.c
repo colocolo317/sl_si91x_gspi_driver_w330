@@ -14,15 +14,15 @@
  * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
-#include "gspi_example.h"
 #include "app.h"
+#include "ampak_gspi_util.h"
 
 /*******************************************************************************
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
-  gspi_example_init();
+  gspi_init();
 }
 
 /*******************************************************************************
@@ -30,5 +30,5 @@ void app_init(void)
  ******************************************************************************/
 void app_process_action(void)
 {
-  gspi_example_process_action();
+  gspi_test_run();
 }
