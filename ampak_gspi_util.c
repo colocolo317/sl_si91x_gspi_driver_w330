@@ -64,16 +64,17 @@ typedef enum {
   SL_GSPI_SEND_DATA,
   SL_GSPI_TRANSMISSION_COMPLETED,
 } gspi_mode_enum_t;
-static gspi_mode_enum_t current_mode = SL_GSPI_TRANSFER_DATA;
 
 /*******************************************************************************
  **********************  Local Function prototypes   ***************************
  ******************************************************************************/
-static sl_status_t init_clock_configuration_structure(sl_gspi_clock_config_t *clock_config);
-static void compare_loop_back_data(void);
+
+
 static void gspi_callback_event(uint32_t event);
 static boolean_t transfer_complete  = false;
-static boolean_t begin_transmission = true;
+
+static sl_status_t init_clock_configuration_structure(sl_gspi_clock_config_t *clock_config); // seems no effects
+static void compare_loop_back_data(void);
 
 /*******************************************************************************
  **************************   GLOBAL FUNCTIONS   *******************************
@@ -186,6 +187,9 @@ sl_status_t ampak_gspi_receive(uint8_t* data_in, size_t len)
 
 void gspi_test_run(void)
 {
+  static gspi_mode_enum_t current_mode = SL_GSPI_TRANSFER_DATA;
+  static boolean_t begin_transmission = true;
+
   // Filling the data out array with integer values
   for (uint16_t i = 0; i < GSPI_BUFFER_SIZE; i++) {
     gspi_data_out[i] = (uint8_t)(i + 1);

@@ -2161,7 +2161,7 @@ LOAD c:/siliconlabs/simplicitystudio/v5/developer/toolchains/gnu_arm/12.2.rel1_2
                 0x0000000c                __data_start__ = .
                 0x0000000c                _sdata = __data_start__
  *(.data*)
- .data.begin_transmission
+ .data.begin_transmission.0
                 0x0000000c        0x1 ./ampak_gspi_util.o
  *fill*         0x0000000d        0x1 
  .data.gspi_division_factor
@@ -2373,9 +2373,9 @@ LOAD c:/siliconlabs/simplicitystudio/v5/developer/toolchains/gnu_arm/12.2.rel1_2
                 0x00000794        0x1 c:/siliconlabs/simplicitystudio/v5/developer/toolchains/gnu_arm/12.2.rel1_2023.7/bin/../lib/gcc/arm-none-eabi/12.2.1/thumb/v7e-m+fp/softfp/crtbegin.o
  *fill*         0x00000795        0x3 
  .bss.object.0  0x00000798       0x18 c:/siliconlabs/simplicitystudio/v5/developer/toolchains/gnu_arm/12.2.rel1_2023.7/bin/../lib/gcc/arm-none-eabi/12.2.1/thumb/v7e-m+fp/softfp/crtbegin.o
- .bss.transfer_complete
+ .bss.current_mode.1
                 0x000007b0        0x1 ./ampak_gspi_util.o
- .bss.current_mode
+ .bss.transfer_complete
                 0x000007b1        0x1 ./ampak_gspi_util.o
  *fill*         0x000007b2        0x2 
  .bss.gspi_driver_handle
@@ -2878,34 +2878,34 @@ LOAD linker stubs
  .debug_ranges  0x00001030       0xd0 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_gspi.o
  .debug_ranges  0x00001100      0x1b0 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_ulp_timer.o
 
-.debug_line     0x00000000    0x118e2
- .debug_line    0x00000000      0xa26 ./ampak_gspi_util.o
- .debug_line    0x00000a26       0x69 ./app.o
- .debug_line    0x00000a8f       0xf1 ./main.o
- .debug_line    0x00000b80      0x27e ./autogen/sl_event_handler.o
- .debug_line    0x00000dfe      0x10a ./simplicity_sdk_2024.6.0/platform/service/system/src/sl_system_init.o
- .debug_line    0x00000f08      0x113 ./simplicity_sdk_2024.6.0/platform/service/system/src/sl_system_process_action.o
- .debug_line    0x0000101b      0x724 ./wiseconnect3_sdk_3.3.0/components/board/silabs/src/rsi_board.o
- .debug_line    0x0000173f      0xcad ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/iPMU_prog/iPMU_dotc/ipmu_apis.o
- .debug_line    0x000023ec      0x251 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/iPMU_prog/iPMU_dotc/rsi_system_config_917.o
- .debug_line    0x0000263d      0xcee ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/rsi_deepsleep_soc.o
- .debug_line    0x0000332b      0x309 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/startup_si91x.o
- .debug_line    0x00003634      0x995 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/system_si91x.o
- .debug_line    0x00003fc9      0x5da ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/common/src/rsi_debug.o
- .debug_line    0x000045a3       0xbf ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/common/src/sl_si91x_stack_object_declare.o
- .debug_line    0x00004662      0xa66 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/common/src/syscalls.o
- .debug_line    0x000050c8      0x7af ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/cmsis_driver/GSPI.o
- .debug_line    0x00005877      0xc64 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/cmsis_driver/UDMA.o
- .debug_line    0x000064db      0xcae ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/cmsis_driver/USART.o
- .debug_line    0x00007189      0x9d3 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/clock_update.o
- .debug_line    0x00007b5c     0x1d77 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_gspi.o
- .debug_line    0x000098d3     0x214a ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_usart.o
- .debug_line    0x0000ba1d     0x197c ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_ipmu.o
- .debug_line    0x0000d399      0x7d6 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_pll.o
- .debug_line    0x0000db6f      0x72f ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_ulpss_clk.o
- .debug_line    0x0000e29e     0x14f0 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_dma.o
- .debug_line    0x0000f78e      0xbe7 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_gspi.o
- .debug_line    0x00010375     0x156d ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_ulp_timer.o
+.debug_line     0x00000000    0x118e4
+ .debug_line    0x00000000      0xa28 ./ampak_gspi_util.o
+ .debug_line    0x00000a28       0x69 ./app.o
+ .debug_line    0x00000a91       0xf1 ./main.o
+ .debug_line    0x00000b82      0x27e ./autogen/sl_event_handler.o
+ .debug_line    0x00000e00      0x10a ./simplicity_sdk_2024.6.0/platform/service/system/src/sl_system_init.o
+ .debug_line    0x00000f0a      0x113 ./simplicity_sdk_2024.6.0/platform/service/system/src/sl_system_process_action.o
+ .debug_line    0x0000101d      0x724 ./wiseconnect3_sdk_3.3.0/components/board/silabs/src/rsi_board.o
+ .debug_line    0x00001741      0xcad ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/iPMU_prog/iPMU_dotc/ipmu_apis.o
+ .debug_line    0x000023ee      0x251 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/iPMU_prog/iPMU_dotc/rsi_system_config_917.o
+ .debug_line    0x0000263f      0xcee ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/rsi_deepsleep_soc.o
+ .debug_line    0x0000332d      0x309 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/startup_si91x.o
+ .debug_line    0x00003636      0x995 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/chip/src/system_si91x.o
+ .debug_line    0x00003fcb      0x5da ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/common/src/rsi_debug.o
+ .debug_line    0x000045a5       0xbf ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/common/src/sl_si91x_stack_object_declare.o
+ .debug_line    0x00004664      0xa66 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/core/common/src/syscalls.o
+ .debug_line    0x000050ca      0x7af ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/cmsis_driver/GSPI.o
+ .debug_line    0x00005879      0xc64 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/cmsis_driver/UDMA.o
+ .debug_line    0x000064dd      0xcae ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/cmsis_driver/USART.o
+ .debug_line    0x0000718b      0x9d3 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/clock_update.o
+ .debug_line    0x00007b5e     0x1d77 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_gspi.o
+ .debug_line    0x000098d5     0x214a ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_usart.o
+ .debug_line    0x0000ba1f     0x197c ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_ipmu.o
+ .debug_line    0x0000d39b      0x7d6 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_pll.o
+ .debug_line    0x0000db71      0x72f ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_ulpss_clk.o
+ .debug_line    0x0000e2a0     0x14f0 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_dma.o
+ .debug_line    0x0000f790      0xbe7 ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_gspi.o
+ .debug_line    0x00010377     0x156d ./wiseconnect3_sdk_3.3.0/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_ulp_timer.o
 
 .debug_str      0x00000000    0x14ba2
  .debug_str     0x00000000      0x920 ./ampak_gspi_util.o
