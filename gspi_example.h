@@ -31,7 +31,7 @@
  * @param none
  * @return none
  ******************************************************************************/
-void gspi_example_init(void);
+void gspi_test_init(void);
 
 /***************************************************************************/ /**
  * Function will run continuously 
@@ -46,6 +46,6 @@ void gspi_example_init(void);
  * @param none
  * @return none
  ******************************************************************************/
-void gspi_example_process_action(void);
+void gspi_test_task(void);
 
 #endif /* CALENDAR_EXAMPLE_H_ */

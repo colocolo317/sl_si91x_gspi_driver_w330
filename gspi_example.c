@@ -25,7 +25,7 @@
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
-#define GSPI_BUFFER_SIZE             1024      // Size of buffer
+#define GSPI_BUFFER_SIZE             10240      // Size of buffer
 #define GSPI_INTF_PLL_CLK            180000000 // Intf pll clock frequency
 #define GSPI_INTF_PLL_REF_CLK        40000000  // Intf pll reference clock frequency
 #define GSPI_SOC_PLL_CLK             20000000  // Soc pll clock frequency
@@ -35,7 +35,7 @@
 #define GSPI_DVISION_FACTOR          0         // Division factor
 #define GSPI_SWAP_READ_DATA          1         // true to enable and false to disable swap read
 #define GSPI_SWAP_WRITE_DATA         0         // true to enable and false to disable swap write
-#define GSPI_BITRATE                 10000000  // Bitrate for setting the clock division factor
+#define GSPI_BITRATE                 40000000  // Bitrate for setting the clock division factor
 #define GSPI_BIT_WIDTH               8         // Default Bit width
 #define GSPI_MAX_BIT_WIDTH           16        // Maximum Bit width
 #define TIMER_FREQUENCY              32000     // Timer frequency for delay
@@ -55,6 +55,8 @@ static uint8_t gspi_data_in[GSPI_BUFFER_SIZE];
 static uint8_t gspi_data_out[GSPI_BUFFER_SIZE];
 static uint16_t gspi_division_factor       = 1;
 static sl_gspi_handle_t gspi_driver_handle = NULL;
+
+extern ulp_timer_clk_src_config_t sl_timer_clk_handle;
 
 //Enum for different transmission scenarios
 typedef enum {
@@ -100,7 +102,7 @@ static void default_clock_configuration(void)
 /*******************************************************************************
  * GSPI example initialization function
  ******************************************************************************/
-void gspi_example_init(void)
+void gspi_test_init(void)
 {
   sl_status_t status;
   sl_gspi_clock_config_t clock_config;
@@ -180,7 +182,9 @@ void gspi_example_init(void)
       gspi_division_factor = sizeof(gspi_data_out[0]);
     }
     // Syncing master and slave
+#if 0
     wait_for_sync(SYNC_TIME);
+#endif
     // As per the macros enabled in the header file, it will configure the current mode.
     if (SL_USE_TRANSFER) {
       current_mode = SL_GSPI_TRANSFER_DATA;
@@ -196,7 +200,7 @@ void gspi_example_init(void)
 /*******************************************************************************
  * Function will run continuously in while loop
  ******************************************************************************/
-void gspi_example_process_action(void)
+void gspi_test_task(void)
 {
   sl_status_t status;
   // In this switch case, according to the macros enabled in header file, it starts to execute the APIs
